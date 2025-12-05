@@ -490,10 +490,8 @@ body {
 /* ============================================
    Animations
    ============================================ */
-[data-scroll] {
-  transition: opacity 0.8s var(--transition-smooth),
-    transform 0.8s var(--transition-smooth);
-}
+/* [data-scroll] removed - handled by GSAP */
+
 
 .reveal-text {
   overflow: hidden;
