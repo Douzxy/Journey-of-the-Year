@@ -254,6 +254,29 @@ app.post("/api/login", (req, res) => {
   }
 });
 
+// API: Get data
+app.get("/api/data", (req, res) => {
+  const dataPath = path.join(__dirname, "data.json");
+  if (fs.existsSync(dataPath)) {
+    res.sendFile(dataPath);
+  } else {
+    // If no data.json, return empty array or default
+    res.json([]);
+  }
+});
+
+// API: Update data
+app.post("/api/data", (req, res) => {
+  const dataPath = path.join(__dirname, "data.json");
+  try {
+    fs.writeFileSync(dataPath, JSON.stringify(req.body, null, 2));
+    res.json({ success: true, message: "Data updated successfully" });
+  } catch (error) {
+    console.error("Error writing data:", error);
+    res.status(500).json({ error: "Failed to update data" });
+  }
+});
+
 // Serve index.html for root
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));

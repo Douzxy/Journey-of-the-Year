@@ -14,6 +14,7 @@ let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;
 let audioPlayer = null;
 let isPlaying = false;
+let appData = []; // Store data from API
 
 // ============================================
 // Initialize Three.js
@@ -141,7 +142,9 @@ function generateMonthSections() {
 
   let html = "";
 
-  MONTHS_DATA.forEach((month, index) => {
+  const dataToUse = appData.length > 0 ? appData : window.MONTHS_DATA || [];
+
+  dataToUse.forEach((month, index) => {
     const isEven = index % 2 === 0;
     const paddedIndex = String(index + 1).padStart(2, "0");
     const previewPhotos = month.photos.slice(0, 3); // Show 3 preview photos
@@ -171,14 +174,17 @@ function generateMonthSections() {
                 </div>
                 <div class="month-gallery">
                     <div class="gallery-preview">
-                        <div class="preview-main" onclick="openGallery(${index}, 0)">
-                            <img src="${previewPhotos[0] || ""}" alt="${
-      month.name
-    } foto 1" loading="lazy">
-                            <div class="preview-overlay">
-                                <span>Klik untuk lihat</span>
-                            </div>
-                        </div>
+                       <div class="preview-main" onclick="openGallery(${index}, 0)">
+    ${
+      previewPhotos[0]
+        ? `<img src="${previewPhotos[0]}" alt="${month.name} foto 1" loading="lazy">`
+        : ""
+    }
+    <div class="preview-overlay">
+        <span>Klik untuk lihat</span>
+    </div>
+</div>
+
                         <div class="preview-side">
                             ${
                               previewPhotos[1]
@@ -275,7 +281,8 @@ let currentPhotoIndex = 0;
 
 function openGallery(monthIndex, photoIndex) {
   const modal = document.getElementById("gallery-modal");
-  const month = MONTHS_DATA[monthIndex];
+  const dataToUse = appData.length > 0 ? appData : window.MONTHS_DATA || [];
+  const month = dataToUse[monthIndex];
 
   currentMonthPhotos = month.photos;
   currentPhotoIndex = photoIndex;
@@ -410,7 +417,8 @@ function generateNavDots() {
   if (!navDots) return;
 
   let html = "";
-  MONTHS_DATA.forEach((month, index) => {
+  const dataToUse = appData.length > 0 ? appData : window.MONTHS_DATA || [];
+  dataToUse.forEach((month, index) => {
     html += `<div class="nav-dot" data-index="${index}" data-label="${month.shortName}"></div>`;
   });
   navDots.innerHTML = html;
@@ -579,7 +587,19 @@ function closeWelcomeModal() {
 // ============================================
 // Initialize
 // ============================================
-document.addEventListener("DOMContentLoaded", () => {
+// ============================================
+// Initialize
+// ============================================
+async function initApp() {
+  try {
+    const response = await fetch("/api/data");
+    if (response.ok) {
+      appData = await response.json();
+    }
+  } catch (error) {
+    console.warn("Failed to load API data, falling back to static data");
+  }
+
   generateMonthSections();
   generateNavDots();
   createGalleryModal();
@@ -590,7 +610,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Refresh cursor listeners after content loads
   setTimeout(refreshCursorListeners, 500);
-});
+}
+
+document.addEventListener("DOMContentLoaded", initApp);
 
 // Expose globally
 window.openGallery = openGallery;

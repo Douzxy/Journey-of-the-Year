@@ -625,6 +625,7 @@
         width: 80px; /* Fixed width */
         height: 4px;
         -webkit-appearance: none;
+        appearance: none;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 2px;
         outline: none;
@@ -678,6 +679,7 @@
 
       .volume-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
+        appearance: none;
         width: 12px;
         height: 12px;
         border-radius: 50%;
@@ -698,6 +700,76 @@
 
       .hidden {
         display: none !important;
+      }
+
+      /* Month Settings */
+      .month-settings {
+        background: var(--color-surface);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+      }
+
+      .month-settings h3 {
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .form-group textarea,
+      .form-group input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #fff;
+        font-family: "Outfit", sans-serif;
+        resize: vertical;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 20px;
+      }
+
+      .color-input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      input[type="color"] {
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        cursor: pointer;
+        background: none;
+      }
+
+      input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+
+      input[type="color"]::-webkit-color-swatch {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
       }
     </style>
   </head>
@@ -886,6 +958,58 @@
         <input type="file" id="file-input" accept="image/*" multiple />
       </div>
 
+      <!-- Month Settings -->
+      <div class="month-settings hidden" id="month-settings">
+        <h3>Pengaturan Bulan</h3>
+        <div class="form-group">
+          <label>Deskripsi</label>
+          <textarea
+            id="month-description"
+            rows="3"
+            placeholder="Deskripsi bulan..."
+          ></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Warna Background</label>
+            <div class="color-input-group">
+              <input type="color" id="month-color" />
+              <span
+                id="month-color-val"
+                style="font-size: 0.85rem; opacity: 0.7"
+                >#000000</span
+              >
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Warna Aksen</label>
+            <div class="color-input-group">
+              <input type="color" id="month-accent" />
+              <span
+                id="month-accent-val"
+                style="font-size: 0.85rem; opacity: 0.7"
+                >#000000</span
+              >
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveMonthSettings()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+            ></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Simpan Perubahan
+        </button>
+      </div>
+
       <!-- Image Grid -->
       <div class="section-title">
         <span>📷</span>
@@ -986,6 +1110,7 @@
 
       let currentMonth = null;
       let allImages = {};
+      let monthsData = []; // Store full data from API
 
       // Check authentication
       function checkAuth() {
@@ -1009,8 +1134,10 @@
       // Initialize
       function init() {
         checkAuth();
-        generateMonthNav();
-        loadImages();
+        loadMonthsData().then(() => {
+          generateMonthNav();
+          loadImages();
+        });
         setupUpload();
         loadMusicList();
 
@@ -1066,12 +1193,17 @@
           .forEach((el) => el.classList.remove("active"));
         element.classList.add("active");
 
-        // Show/Hide Upload Zone
+        // Show/Hide Upload Zone & Settings
         const uploadZone = document.getElementById("upload-zone");
+        const settingsZone = document.getElementById("month-settings");
+
         if (currentMonth) {
           uploadZone.classList.remove("hidden");
+          settingsZone.classList.remove("hidden");
+          loadMonthSettings(currentMonth);
         } else {
           uploadZone.classList.add("hidden");
+          settingsZone.classList.add("hidden");
         }
 
         loadImages();
@@ -1486,6 +1618,80 @@
         input.addEventListener("change", (e) => {
           handleFiles(e.target.files);
         });
+      }
+
+      // Load months data
+      async function loadMonthsData() {
+        try {
+          const response = await fetch("/api/data");
+          if (response.ok) {
+            monthsData = await response.json();
+          }
+        } catch (error) {
+          console.error("Failed to load months data", error);
+        }
+      }
+
+      // Load settings into form
+      function loadMonthSettings(monthKey) {
+        const data = monthsData.find((m) => m.name.toLowerCase() === monthKey);
+        if (!data) return;
+
+        document.getElementById("month-description").value =
+          data.description || "";
+        document.getElementById("month-color").value = data.color || "#000000";
+        document.getElementById("month-accent").value =
+          data.accentColor || "#000000";
+
+        document.getElementById("month-color-val").textContent =
+          data.color || "#000000";
+        document.getElementById("month-accent-val").textContent =
+          data.accentColor || "#000000";
+      }
+
+      // Update color value display
+      document.getElementById("month-color").addEventListener("input", (e) => {
+        document.getElementById("month-color-val").textContent = e.target.value;
+      });
+      document.getElementById("month-accent").addEventListener("input", (e) => {
+        document.getElementById("month-accent-val").textContent =
+          e.target.value;
+      });
+
+      // Save settings
+      async function saveMonthSettings() {
+        if (!currentMonth) return;
+
+        const description = document.getElementById("month-description").value;
+        const color = document.getElementById("month-color").value;
+        const accentColor = document.getElementById("month-accent").value;
+
+        // Update local data
+        const index = monthsData.findIndex(
+          (m) => m.name.toLowerCase() === currentMonth
+        );
+        if (index !== -1) {
+          monthsData[index].description = description;
+          monthsData[index].color = color;
+          monthsData[index].accentColor = accentColor;
+        }
+
+        // Send to server
+        try {
+          const response = await fetch("/api/data", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(monthsData),
+          });
+
+          if (response.ok) {
+            showToast("Pengaturan berhasil disimpan!", "success");
+          } else {
+            showToast("Gagal menyimpan pengaturan", "error");
+          }
+        } catch (error) {
+          showToast("Terjadi kesalahan saat menyimpan", "error");
+        }
       }
 
       // Handle file upload
