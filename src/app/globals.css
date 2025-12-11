@@ -1,0 +1,563 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Romantic Love Palette */
+  --blush-pink: #FFB6C1;
+  --rose-gold: #E8A0BF;
+  --deep-rose: #C54B6C;
+  --champagne: #F7E7CE;
+  --soft-lavender: #DCD6F7;
+  --burgundy: #800020;
+  --cream-white: #FFF8F0;
+  
+  /* Aliases */
+  --cream: #FFF8F0;
+  --peach: #FFB6C1;
+  --coral: #C54B6C;
+  --butter: #F7E7CE;
+  --mint: #DCD6F7;
+  --lavender: #DCD6F7;
+  --blush: #E8A0BF;
+  --rust: #C54B6C;
+  --clay: #E8A0BF;
+  --slate: #800020;
+  --taupe: #D4A5A5;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  background: linear-gradient(
+    180deg,
+    var(--cream-white) 0%,
+    #FFF0F5 25%,
+    #FFE4EC 50%,
+    #FFF0F5 75%,
+    var(--cream-white) 100%
+  );
+  background-attachment: fixed;
+  color: #4A4A4A;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Paper Texture Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Handwriting Font */
+.font-handwriting {
+  font-family: "Caveat", cursive;
+}
+
+/* Photo Card Styles */
+.photo-card {
+  background: #FFFDF9;
+  padding: 12px;
+  padding-bottom: 40px;
+  box-shadow: 0 4px 6px rgba(197, 75, 108, 0.1), 0 10px 20px rgba(197, 75, 108, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+  position: relative;
+}
+
+.photo-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(232, 160, 191, 0.2);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+/* Tape Effect - Darker Rose tint */
+.tape {
+  position: absolute;
+  width: 80px;
+  height: 25px;
+  background: linear-gradient(
+    135deg,
+    rgba(232, 160, 191, 0.85) 0%,
+    rgba(197, 75, 108, 0.75) 50%,
+    rgba(232, 160, 191, 0.85) 100%
+  );
+  opacity: 0.95;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(197, 75, 108, 0.3);
+}
+
+.tape::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.3) 2px,
+    rgba(255, 255, 255, 0.3) 4px
+  );
+}
+
+.tape-top {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+}
+
+.tape-left {
+  top: 20px;
+  left: -30px;
+  transform: rotate(-45deg);
+}
+
+.tape-right {
+  top: 20px;
+  right: -30px;
+  transform: rotate(45deg);
+}
+
+/* Pin Effect - Deep Rose */
+.pin {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #E8A0BF, #C54B6C);
+  box-shadow: 0 2px 4px rgba(128, 0, 32, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  z-index: 15;
+}
+
+.pin::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 15px;
+  background: linear-gradient(to bottom, #888, #666);
+  border-radius: 0 0 2px 2px;
+}
+
+/* Sticky Note - Champagne style */
+.sticky-note {
+  padding: 20px;
+  background: linear-gradient(135deg, var(--champagne) 0%, #FFF5E6 100%);
+  box-shadow: 2px 2px 8px rgba(197, 75, 108, 0.12), inset 0 -2px 0 rgba(0, 0, 0, 0.03);
+  transform: rotate(-2deg);
+  position: relative;
+}
+
+.sticky-note::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: 0 25px 25px 0;
+  border-style: solid;
+  border-color: rgba(197, 75, 108, 0.05) var(--cream-white) rgba(197, 75, 108, 0.05);
+}
+
+/* Torn Paper Edge */
+.torn-edge {
+  position: relative;
+}
+
+.torn-edge::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(
+    135deg,
+    transparent 25%,
+    #FFFDF9 25%,
+    #FFFDF9 50%,
+    transparent 50%,
+    transparent 75%,
+    #FFFDF9 75%
+  );
+  background-size: 20px 20px;
+  clip-path: polygon(
+    0% 50%,
+    5% 30%,
+    10% 50%,
+    15% 20%,
+    20% 50%,
+    25% 35%,
+    30% 50%,
+    35% 25%,
+    40% 50%,
+    45% 30%,
+    50% 50%,
+    55% 20%,
+    60% 50%,
+    65% 35%,
+    70% 50%,
+    75% 25%,
+    80% 50%,
+    85% 30%,
+    90% 50%,
+    95% 20%,
+    100% 50%,
+    100% 100%,
+    0% 100%
+  );
+}
+
+/* Glitter particles container - Pink/Rose tones */
+.glitter-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.glitter {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #E8A0BF, #C54B6C);
+  border-radius: 50%;
+  animation: glitter 1.5s ease-in-out infinite;
+  opacity: 0;
+}
+
+/* Decorative blob - Romantic tones */
+.blob {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  position: absolute;
+  filter: blur(0px);
+  opacity: 0.25;
+}
+
+/* Star decoration */
+.star {
+  position: absolute;
+  animation: twinkle 3s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.star::before {
+  content: "✦";
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Heart decoration */
+.heart {
+  position: absolute;
+  animation: heartbeat 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.heart::before {
+  content: "❤️";
+  font-size: inherit;
+}
+
+/* Doodle line */
+.doodle-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 2s ease forwards;
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+/* Month title styles - Romantic gradient */
+.month-title {
+  font-family: "Caveat", cursive;
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--deep-rose), var(--rose-gold), var(--blush-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 2px 2px 4px rgba(197, 75, 108, 0.1);
+  position: relative;
+  display: inline-block;
+}
+
+/* Hero title */
+.hero-title {
+  font-family: "Caveat", cursive;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.hero-title .line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-title .line-inner {
+  display: block;
+  transform: translateY(100%);
+}
+
+/* Smooth reveal animation class */
+.reveal-text {
+  clip-path: inset(0 100% 0 0);
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .photo-card {
+    padding: 8px;
+    padding-bottom: 30px;
+  }
+
+  .tape {
+    width: 60px;
+    height: 20px;
+  }
+
+  .sticky-note {
+    padding: 15px;
+  }
+}
+
+/* Photo placeholder gradient - Romantic tones */
+.photo-placeholder {
+  background: linear-gradient(
+    135deg,
+    var(--blush-pink) 0%,
+    var(--rose-gold) 25%,
+    var(--champagne) 50%,
+    var(--soft-lavender) 75%,
+    var(--deep-rose) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Scrapbook element entrance animations */
+.scrapbook-enter {
+  opacity: 0;
+  transform: translateY(50px) rotate(5deg);
+}
+
+.scrapbook-enter.from-left {
+  transform: translateX(-100px) rotate(-5deg);
+}
+
+.scrapbook-enter.from-right {
+  transform: translateX(100px) rotate(5deg);
+}
+
+/* Music Control Button - Romantic style */
+.music-control {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rose-gold), var(--deep-rose));
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 15px rgba(197, 75, 108, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1001;
+}
+
+.music-control:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(197, 75, 108, 0.4);
+}
+
+.music-control:active {
+  transform: scale(0.95);
+}
+
+.music-control.playing {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(197, 75, 108, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(232, 160, 191, 0.5);
+  }
+}
+
+/* Music Modal - Romantic style */
+.music-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(128, 0, 32, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+.music-modal {
+  background: linear-gradient(135deg, var(--cream-white) 0%, #FFF0F5 100%);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  margin: 20px;
+  box-shadow: 0 20px 60px rgba(197, 75, 108, 0.3);
+  animation: slideUp 0.4s ease;
+}
+
+.music-modal h2 {
+  font-family: "Caveat", cursive;
+  font-size: 2rem;
+  color: var(--deep-rose);
+  margin-bottom: 12px;
+}
+
+.music-modal p {
+  color: #666;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.music-modal-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.music-modal button {
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.music-modal .btn-yes {
+  background: linear-gradient(135deg, var(--rose-gold), var(--deep-rose));
+  color: white;
+}
+
+.music-modal .btn-yes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(197, 75, 108, 0.4);
+}
+
+.music-modal .btn-no {
+  background: var(--soft-lavender);
+  color: #666;
+}
+
+.music-modal .btn-no:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 214, 247, 0.5);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
